@@ -1,17 +1,52 @@
+import { PDFViewer } from '@react-pdf/renderer';
 import { useState } from 'react'
+import MyDocument from './Template';
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    description: ''
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
 
   return (
     <>
-      <div className='flex min-h-screen'>
+      <div className='flex h-screen'>
         <div className='h-full flex-1'>
-          Sidebard
+         <form className="flex flex-col gap-4">
+          <input 
+            name="firstName"
+            placeholder="Imię"
+            className="p-2 border"
+            onChange={handleChange} 
+          />
+          <input 
+            name="lastName"
+            placeholder="Nazwisko"
+            className="p-2 border"
+            onChange={handleChange} 
+          />
+          <textarea 
+            name="description"
+            placeholder="Opis"
+            className="p-2 border"
+            onChange={handleChange} 
+          />
+        </form>
         </div>
         <div className='h-full flex-1'>
-          Content
+          <PDFViewer className="w-full h-full border-none">
+            <MyDocument data={formData} />
+          </PDFViewer>
         </div>
       </div>
     </>
