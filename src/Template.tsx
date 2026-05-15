@@ -1,155 +1,296 @@
-import { Document, Page, Font, Text, View, StyleSheet } from '@react-pdf/renderer'
+import {
+  Document,
+  Page,
+  Font,
+  Text,
+  View,
+  StyleSheet
+} from '@react-pdf/renderer'
 
 Font.register({
-  family: "Roboto",
-  src:
-    "https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-light-webfont.ttf"
+  family: 'Roboto',
+  src: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-light-webfont.ttf'
 })
 
 const styles = StyleSheet.create({
 
-  /* === STRONA === */
+  /* PAGE */
+
   page: {
     flexDirection: 'row',
-    fontFamily: "Roboto",
-    fontSize: 11,
-    lineHeight: 1.5
+    fontFamily: 'Roboto',
+    backgroundColor: '#f4f4f4',
+    color: '#444',
+    fontSize: 10
   },
 
-  /* === SIDEBAR (LEWA) === */
+  /* SIDEBAR */
+
   sidebar: {
-    width: '30%',
-    backgroundColor: '#f2f2f2',
-    padding: 24,
-    borderRight: '1 solid black'
+    width: '32%',
+    paddingTop: 50,
+    paddingHorizontal: 28,
+    borderRight: '1 solid #cfcfcf',
+    minHeight: '100%'
   },
 
-  /* === MAIN (PRAWA) === */
+  /* MAIN */
+
   main: {
-    width: '70%',
-    padding: 24,
+    width: '68%',
+    paddingTop: 50,
+    paddingHorizontal: 32
   },
 
-  /* === HEADER BOX === */
-  headerBlock: {
-    marginBottom: 18,
-    paddingBottom: 12,
-    borderBottom: '1 solid black'
+  /* HEADER */
+
+  header: {
+    marginBottom: 40
   },
 
-  /* === IMIĘ + NAZWISKO === */
-  name: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    letterSpacing: 1,
-    marginBottom: 10,
+  firstName: {
+    fontSize: 24,
+    color: '#222',
     lineHeight: 1
   },
 
-  /* === STANOWISKO === */
-  role: {
-    fontSize: 10,
-    color: '#444',
-    textTransform: 'uppercase',
-    paddingTop:10
-  },
-
-  /* === SEKCJE === */
-  section: {
+  lastName: {
+    fontSize: 24,
+    color: '#222',
+    lineHeight: 1,
     marginBottom: 14
   },
 
-  /* === TYTUŁY === */
-  title: {
-    fontSize: 11,
-    fontWeight: 'bold',
-    marginBottom: 6,
+  role: {
+    fontSize: 10,
     textTransform: 'uppercase',
-    borderBottom: '1 solid black',
-    paddingBottom: 3
+    color: '#777',
+    letterSpacing: 1.5
   },
 
-  /* === TEKST === */
+  divider: {
+    borderBottom: '1 solid #bdbdbd',
+    marginVertical: 16
+  },
+
+  /* SECTION */
+
+  section: {
+    marginBottom: 28
+  },
+
+  sectionTitle: {
+    fontSize: 11,
+    textTransform: 'uppercase',
+    letterSpacing: 2,
+    marginBottom: 12,
+    color: '#333'
+  },
+
+  /* TEXT */
+
   text: {
+    fontSize: 10,
+    lineHeight: 1.7,
+    color: '#666'
+  },
+
+  smallText: {
+    fontSize: 9,
+    lineHeight: 1.8,
+    color: '#666',
     marginBottom: 4
   },
 
-  /* === MAŁY TEKST (sidebar) === */
-  small: {
+  /* EXPERIENCE / EDUCATION */
+
+  itemBlock: {
+    marginBottom: 22
+  },
+
+  itemTitle: {
     fontSize: 10,
-    marginBottom: 3
+    textTransform: 'uppercase',
+    color: '#333',
+    marginBottom: 4
+  },
+
+  itemSubtitle: {
+    fontSize: 9,
+    color: '#777',
+    marginBottom: 8
+  },
+
+  itemDescription: {
+    fontSize: 9,
+    lineHeight: 1.6,
+    color: '#666'
   }
 })
 
 const MyDocument = ({ data }) => (
   <Document>
+
     <Page size="A4" style={styles.page}>
 
-      {/* ===================== */}
       {/* SIDEBAR */}
-      {/* ===================== */}
+
       <View style={styles.sidebar}>
 
         {/* HEADER */}
-        <View style={styles.headerBlock}>
 
-          <Text style={styles.name}>
-            {data.firstName} {data.lastName}
+        <View style={styles.header}>
+
+          <Text style={styles.firstName}>
+            {data.firstName}
+          </Text>
+
+          <Text style={styles.lastName}>
+            {data.lastName}
           </Text>
 
           <Text style={styles.role}>
-            {data.title || "Frontend Developer"}
+            {data.title}
           </Text>
 
         </View>
 
-        {/* KONTAKT */}
+        {/* CONTACT */}
+
+        <View style={styles.divider} />
+
         <View style={styles.section}>
-          <Text style={styles.title}>Kontakt</Text>
-          <Text style={styles.small}>{data.email}</Text>
-          <Text style={styles.small}>{data.phone}</Text>
+
+          <Text style={styles.sectionTitle}>
+            Kontakt
+          </Text>
+
+          <Text style={styles.smallText}>
+            {data.email}
+          </Text>
+
+          <Text style={styles.smallText}>
+            {data.phone}
+          </Text>
+
+          <Text style={styles.smallText}>
+            {data.address}
+          </Text>
+
         </View>
 
-        {/* JĘZYKI */}
+        {/* SKILLS */}
+
+        <View style={styles.divider} />
+
         <View style={styles.section}>
-          <Text style={styles.title}>Języki</Text>
-          <Text style={styles.small}>{data.languages}</Text>
+
+          <Text style={styles.sectionTitle}>
+            Umiejętności
+          </Text>
+
+          <Text style={styles.smallText}>
+            {data.skills}
+          </Text>
+
         </View>
 
-        {/* CERTYFIKATY */}
+        {/* LANGUAGES */}
+
+        <View style={styles.divider} />
+
         <View style={styles.section}>
-          <Text style={styles.title}>Certyfikaty</Text>
-          <Text style={styles.small}>{data.certificates}</Text>
+
+          <Text style={styles.sectionTitle}>
+            Języki
+          </Text>
+
+          <Text style={styles.smallText}>
+            {data.languages}
+          </Text>
+
+        </View>
+
+        {/* CERTIFICATES */}
+
+        <View style={styles.divider} />
+
+        <View style={styles.section}>
+
+          <Text style={styles.sectionTitle}>
+            Certyfikaty
+          </Text>
+
+          <Text style={styles.smallText}>
+            {data.certificates}
+          </Text>
+
         </View>
 
       </View>
 
-      {/* ===================== */}
       {/* MAIN */}
-      {/* ===================== */}
+
       <View style={styles.main}>
 
-        {/* O MNIE */}
+        {/* ABOUT */}
+
         <View style={styles.section}>
-          <Text style={styles.title}>O mnie</Text>
-          <Text style={styles.text}>{data.description}</Text>
+
+          <Text style={styles.sectionTitle}>
+            O mnie
+          </Text>
+
+          <Text style={styles.text}>
+            {data.description}
+          </Text>
+
         </View>
 
-        {/* DOŚWIADCZENIE */}
+        <View style={styles.divider} />
+
+        {/* EXPERIENCE */}
+
         <View style={styles.section}>
-          <Text style={styles.title}>Doświadczenie</Text>
-          <Text style={styles.text}>{data.experience}</Text>
+
+          <Text style={styles.sectionTitle}>
+            Doświadczenie
+          </Text>
+
+          <View style={styles.itemBlock}>
+
+            <Text style={styles.itemTitle}>
+              {data.experience}
+            </Text>
+
+          </View>
+
         </View>
 
-        {/* EDUKACJA */}
+        <View style={styles.divider} />
+
+        {/* EDUCATION */}
+
         <View style={styles.section}>
-          <Text style={styles.title}>Edukacja</Text>
-          <Text style={styles.text}>{data.education}</Text>
+
+          <Text style={styles.sectionTitle}>
+            Edukacja
+          </Text>
+
+          <View style={styles.itemBlock}>
+
+            <Text style={styles.itemTitle}>
+              {data.education}
+            </Text>
+
+          </View>
+
         </View>
 
       </View>
 
     </Page>
+
   </Document>
 )
 

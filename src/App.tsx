@@ -18,7 +18,20 @@ function App() {
     return savedData ? JSON.parse(savedData) : {
       firstName: '',
       lastName: '',
-      description: ''
+      title: '',
+      email: '',
+      phone: '',
+      address: '',
+      description: '',
+      skills: '',
+      languages: '',
+      certificates: '',
+      experienceTitle: '',
+      experienceDate: '',
+      experience: '',
+      educationTitle: '',
+      educationDate: '',
+      education: ''
     };
   });
 
@@ -57,7 +70,20 @@ function App() {
     setFormData({
       firstName: '',
       lastName: '',
-      description: ''
+      title: '',
+      email: '',
+      phone: '',
+      address: '',
+      description: '',
+      skills: '',
+      languages: '',
+      certificates: '',
+      experienceTitle: '',
+      experienceDate: '',
+      experience: '',
+      educationTitle: '',
+      educationDate: '',
+      education: ''
     });
   }; 
 
@@ -84,12 +110,73 @@ function App() {
             className="p-2 border"
             onChange={handleChange} 
           />
-          <textarea 
+          <input 
+            name="email"
+            value={formData.email}
+            placeholder={t('email')}
+            className="p-2 border"
+            onChange={handleChange}
+          />
+
+          <input 
+            name="phone"
+            value={formData.phone}
+            placeholder={t('phone')}
+            className="p-2 border"
+            onChange={handleChange}
+          />
+
+          <input 
+            name="address"
+            value={formData.address}
+            placeholder={t('address')}
+            className="p-2 border"
+            onChange={handleChange}
+          />
+
+          <input 
+            name="skills"
+            value={formData.skills}
+            placeholder={t('skills')}
+            className="p-2 border"
+            onChange={handleChange}
+          />
+
+          <input 
+            name="languages"
+            value={formData.languages}
+            placeholder={t('languages')}
+            className="p-2 border"
+            onChange={handleChange}
+          />
+
+          <input 
+            name="certificates"
+            value={formData.certificates}
+            placeholder={t('certificates')}
+            className="p-2 border"
+            onChange={handleChange}
+          />
+                    <textarea 
             name="description"
             value={formData.description}
             placeholder={t('description')}
             className="p-2 border"
             onChange={handleChange} 
+          />
+          <textarea 
+            name="experience"
+            value={formData.experience}
+            placeholder={t('experience')}
+            className="p-2 border"
+            onChange={handleChange}
+          />
+          <textarea 
+            name="education"
+            value={formData.education}
+            placeholder={t('education')}
+            className="p-2 border"
+            onChange={handleChange}
           />
           <button 
             type="button" 

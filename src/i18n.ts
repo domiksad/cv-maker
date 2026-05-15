@@ -7,15 +7,46 @@ const resources = {
     translation: {
       firstName: "Imię",
       lastName: "Nazwisko",
+      title: "Stanowisko",
+      email: "Email",
+      phone: "Telefon",
+      address: "Adres",
+
       description: "Opis",
+
+      skills: "Umiejętności",
+      languages: "Języki",
+      certificates: "Certyfikaty",
+
+      experienceTitle: "Stanowisko / Firma",
+      experienceDate: "Data",
+      experience: "Opis doświadczenia",
+
+      education: "Opis edukacji",
+
       preview: "Podgląd PDF"
     }
   },
+
   en: {
     translation: {
       firstName: "First Name",
       lastName: "Last Name",
+      title: "Job Title",
+      email: "Email",
+      phone: "Phone",
+      address: "Address",
+
       description: "Description",
+
+      skills: "Skills",
+      languages: "Languages",
+      certificates: "Certificates",
+      
+      experience: "Experience Description",
+
+      education: "Education Description",
+
       preview: "PDF Preview"
     }
   }
