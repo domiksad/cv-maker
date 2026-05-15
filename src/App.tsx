@@ -1,21 +1,33 @@
-import { PDFViewer } from '@react-pdf/renderer';
+import { PDFViewer } from '@react-pdf/renderer'
 import { useState, useEffect, useMemo } from 'react'
-import { useTranslation } from 'react-i18next';
-import MyDocument from './Template';
+import { useTranslation } from 'react-i18next'
+
+import MyDocument from './Template'
+import MyDocument2 from './Template2'
+
 import "./i18n"
 import './App.css'
 
 function App() {
-  // LANGUAGE
-  const { t, i18n } = useTranslation();
-  const changeLanguage = (lng) => {
-    i18n.changeLanguage(lng);
-  };
 
-  // LOCAL STORAGE  
+  const { t, i18n } = useTranslation()
+
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng)
+  }
+
+  // TEMPLATES
+  const templates = {
+    classic: MyDocument,
+    modern: MyDocument2
+  }
+
+  const [activeTemplate, setActiveTemplate] = useState('classic')
+
+  // FORM DATA
   const [formData, setFormData] = useState(() => {
-    const savedData = localStorage.getItem('formData');
-    return savedData ? JSON.parse(savedData) : {
+    const saved = localStorage.getItem('formData')
+    return saved ? JSON.parse(saved) : {
       firstName: '',
       lastName: '',
       title: '',
@@ -26,48 +38,36 @@ function App() {
       skills: '',
       languages: '',
       certificates: '',
-      experienceTitle: '',
-      experienceDate: '',
       experience: '',
-      educationTitle: '',
-      educationDate: '',
       education: ''
-    };
-  });
+    }
+  })
 
   useEffect(() => {
-    localStorage.setItem('formData', JSON.stringify(formData));
-  }, [formData]);
+    localStorage.setItem('formData', JSON.stringify(formData))
+  }, [formData])
 
-  // DEBOUNCE + MEMOIZATION
-  const [debouncedData, setDebouncedData] = useState(formData);
+  // SNAPSHOT (fix flicker)
+  const [commitData, setCommitData] = useState(formData)
 
   useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedData(formData);
-    }, 500);
+    const t = setTimeout(() => {
+      setCommitData(formData)
+    }, 600)
 
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [formData]);
+    return () => clearTimeout(t)
+  }, [formData])
 
-  const memoizedDocument = useMemo(() => (
-    <MyDocument data={debouncedData} />
-  ), [debouncedData]);
-
-  // HANDLERS
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target
     setFormData(prev => ({
       ...prev,
       [name]: value
-    }));
-  };
+    }))
+  }
 
-  const handleReset = (e) => {
-    e.preventDefault();
-    setFormData({
+  const handleReset = () => {
+    const empty = {
       firstName: '',
       lastName: '',
       title: '',
@@ -78,121 +78,129 @@ function App() {
       skills: '',
       languages: '',
       certificates: '',
-      experienceTitle: '',
-      experienceDate: '',
       experience: '',
-      educationTitle: '',
-      educationDate: '',
       education: ''
-    });
-  }; 
+    }
+
+    setFormData(empty)
+    setCommitData(empty)
+  }
+
+  const ActiveTemplate = useMemo(() => {
+    return templates[activeTemplate]
+  }, [activeTemplate])
+
+  const PDFPreview = ({ Template, data }) => {
+    return (
+      <PDFViewer className="w-full h-full border-none">
+        <Template data={data} />
+      </PDFViewer>
+    )
+  }
+
+  const MemoPDF = useMemo(() => {
+    return (
+      <PDFPreview
+        Template={ActiveTemplate}
+        data={commitData}
+      />
+    )
+  }, [ActiveTemplate, commitData])
 
   return (
-    <>
-      <div className="p-4 flex gap-2">
-        <button onClick={() => changeLanguage('pl')}>PL</button>
-        <button onClick={() => changeLanguage('en')}>EN</button>
-      </div>
-      <div className='flex h-screen'>
-        <div className='h-full flex-1'>
-         <form className="flex flex-col gap-4">
-          <input 
-            name="firstName"
-            value={formData.firstName}
-            placeholder={t('firstName')}
-            className="p-2 border"
-            onChange={handleChange} 
-          />
-          <input 
-            name="lastName"
-            value={formData.lastName}
-            placeholder={t('lastName')}
-            className="p-2 border"
-            onChange={handleChange} 
-          />
-          <input 
-            name="email"
-            value={formData.email}
-            placeholder={t('email')}
-            className="p-2 border"
-            onChange={handleChange}
-          />
+    <div className='flex h-screen flex-col'>
 
-          <input 
-            name="phone"
-            value={formData.phone}
-            placeholder={t('phone')}
-            className="p-2 border"
-            onChange={handleChange}
-          />
+      {/* TOP BAR */}
+      <div className="p-4 flex justify-between items-center border-b">
 
-          <input 
-            name="address"
-            value={formData.address}
-            placeholder={t('address')}
-            className="p-2 border"
-            onChange={handleChange}
-          />
+        {/* LEFT - LANGUAGE */}
+        <div className="flex gap-4">
 
-          <input 
-            name="skills"
-            value={formData.skills}
-            placeholder={t('skills')}
-            className="p-2 border"
-            onChange={handleChange}
-          />
-
-          <input 
-            name="languages"
-            value={formData.languages}
-            placeholder={t('languages')}
-            className="p-2 border"
-            onChange={handleChange}
-          />
-
-          <input 
-            name="certificates"
-            value={formData.certificates}
-            placeholder={t('certificates')}
-            className="p-2 border"
-            onChange={handleChange}
-          />
-                    <textarea 
-            name="description"
-            value={formData.description}
-            placeholder={t('description')}
-            className="p-2 border"
-            onChange={handleChange} 
-          />
-          <textarea 
-            name="experience"
-            value={formData.experience}
-            placeholder={t('experience')}
-            className="p-2 border"
-            onChange={handleChange}
-          />
-          <textarea 
-            name="education"
-            value={formData.education}
-            placeholder={t('education')}
-            className="p-2 border"
-            onChange={handleChange}
-          />
-          <button 
-            type="button" 
-            onClick={handleReset} 
-            className="p-2 bg-red-500 text-white rounded select-none">
-              Reset
+          <button
+            onClick={() => changeLanguage('pl')}
+            style={{
+              fontWeight: i18n.language === 'pl' ? 'bold' : 'normal'
+            }}
+          >
+            PL
           </button>
-        </form>
+
+          <button
+            onClick={() => changeLanguage('en')}
+            style={{
+              fontWeight: i18n.language === 'en' ? 'bold' : 'normal'
+            }}
+          >
+            EN
+          </button>
+
         </div>
-        <div className='h-full flex-1 select-none'>
-          <PDFViewer className="w-full h-full border-none">
-            {memoizedDocument}
-          </PDFViewer>
+
+        {/* RIGHT - TEMPLATES */}
+        <div className="flex gap-4">
+
+          {Object.keys(templates).map((key) => (
+            <button
+              key={key}
+              onClick={() => setActiveTemplate(key)}
+              style={{
+                fontWeight: activeTemplate === key ? 'bold' : 'normal'
+              }}
+            >
+              {key}
+            </button>
+          ))}
+
         </div>
+
       </div>
-    </>
+
+      {/* MAIN CONTENT */}
+      <div className='flex flex-1'>
+
+        {/* LEFT FORM */}
+        <div className='flex-1 overflow-auto p-4'>
+
+          <form className="flex flex-col gap-4">
+
+            <input name="firstName" value={formData.firstName} placeholder={t('firstName')} onChange={handleChange} className="p-2 border" />
+            <input name="lastName" value={formData.lastName} placeholder={t('lastName')} onChange={handleChange} className="p-2 border" />
+            <input name="title" value={formData.title} placeholder={t('title')} onChange={handleChange} className="p-2 border" />
+
+            <input name="email" value={formData.email} placeholder={t('email')} onChange={handleChange} className="p-2 border" />
+            <input name="phone" value={formData.phone} placeholder={t('phone')} onChange={handleChange} className="p-2 border" />
+            <input name="address" value={formData.address} placeholder={t('address')} onChange={handleChange} className="p-2 border" />
+
+            <input name="skills" value={formData.skills} placeholder={t('skills')} onChange={handleChange} className="p-2 border" />
+            <input name="languages" value={formData.languages} placeholder={t('languages')} onChange={handleChange} className="p-2 border" />
+            <input name="certificates" value={formData.certificates} placeholder={t('certificates')} onChange={handleChange} className="p-2 border" />
+
+            <textarea name="description" value={formData.description} placeholder={t('description')} onChange={handleChange} className="p-2 border" />
+            <textarea name="experience" value={formData.experience} placeholder={t('experience')} onChange={handleChange} className="p-2 border" />
+            <textarea name="education" value={formData.education} placeholder={t('education')} onChange={handleChange} className="p-2 border" />
+
+            <button
+              type="button"
+              onClick={handleReset}
+              className="p-2 bg-red-500 text-white rounded"
+            >
+              Reset
+            </button>
+
+          </form>
+
+        </div>
+
+        {/* RIGHT PREVIEW */}
+        <div className='flex-1'>
+
+          {MemoPDF}
+
+        </div>
+
+      </div>
+
+    </div>
   )
 }
 

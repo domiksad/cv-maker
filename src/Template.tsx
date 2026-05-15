@@ -14,117 +14,103 @@ Font.register({
 
 const styles = StyleSheet.create({
 
-  /* PAGE */
-
   page: {
     flexDirection: 'row',
     fontFamily: 'Roboto',
-    backgroundColor: '#f4f4f4',
-    color: '#444',
-    fontSize: 10
+    backgroundColor: '#ffffff',
+    fontSize: 12
   },
 
-  /* SIDEBAR */
+  /* FAKE BACKGROUND SHAPE */
+  bgShape: {
+    position: 'absolute',
+    bottom: 0,
+    right: -80,
+    width: 300,
+    height: 300,
+    backgroundColor: '#000',
+    transform: 'rotate(20deg)',
+    opacity: 0.08
+  },
 
   sidebar: {
     width: '32%',
-    paddingTop: 50,
-    paddingHorizontal: 28,
-    borderRight: '1 solid #cfcfcf',
-    minHeight: '100%'
+    backgroundColor: '#f3f4f6',
+    padding: 24,
+    borderRight: '2 solid #000'
   },
-
-  /* MAIN */
 
   main: {
     width: '68%',
-    paddingTop: 50,
-    paddingHorizontal: 32
-  },
-
-  /* HEADER */
-
-  header: {
-    marginBottom: 40
+    padding: 28
   },
 
   firstName: {
-    fontSize: 24,
-    color: '#222',
-    lineHeight: 1
+    fontSize: 28,
+    fontWeight: 700,
+    color: '#000'
   },
 
   lastName: {
-    fontSize: 24,
-    color: '#222',
-    lineHeight: 1,
-    marginBottom: 14
-  },
-
-  role: {
-    fontSize: 10,
-    textTransform: 'uppercase',
-    color: '#777',
-    letterSpacing: 1.5
-  },
-
-  divider: {
-    borderBottom: '1 solid #bdbdbd',
-    marginVertical: 16
-  },
-
-  /* SECTION */
-
-  section: {
-    marginBottom: 28
-  },
-
-  sectionTitle: {
-    fontSize: 11,
-    textTransform: 'uppercase',
-    letterSpacing: 2,
-    marginBottom: 12,
-    color: '#333'
-  },
-
-  /* TEXT */
-
-  text: {
-    fontSize: 10,
-    lineHeight: 1.7,
-    color: '#666'
-  },
-
-  smallText: {
-    fontSize: 9,
-    lineHeight: 1.8,
-    color: '#666',
-    marginBottom: 4
-  },
-
-  /* EXPERIENCE / EDUCATION */
-
-  itemBlock: {
-    marginBottom: 22
-  },
-
-  itemTitle: {
-    fontSize: 10,
-    textTransform: 'uppercase',
-    color: '#333',
-    marginBottom: 4
-  },
-
-  itemSubtitle: {
-    fontSize: 9,
-    color: '#777',
+    fontSize: 28,
+    color: '#000',
     marginBottom: 8
   },
 
-  itemDescription: {
-    fontSize: 9,
-    lineHeight: 1.6,
-    color: '#666'
+  role: {
+    fontSize: 11,
+    textTransform: 'uppercase',
+    marginBottom: 14,
+    color: '#333'
+  },
+
+  divider: {
+    borderBottom: '1 solid #000',
+    marginVertical: 8
+  },
+
+  sectionTitle: {
+    fontSize: 12,
+    fontWeight: 700,
+    textTransform: 'uppercase',
+    marginBottom: 6,
+    color: '#000'
+  },
+
+  text: {
+    fontSize: 12,
+    color: '#111',
+    lineHeight: 1.4,
+    marginBottom: 2
+  },
+
+  mainTitle: {
+    fontSize: 15,
+    fontWeight: 700,
+    textTransform: 'uppercase',
+    marginBottom: 6
+  },
+
+  block: {
+    marginBottom: 12
+  },
+
+  itemTitle: {
+    fontSize: 13,
+    fontWeight: 700,
+    color: '#000'
+  },
+
+  itemSub: {
+    fontSize: 11,
+    color: '#444',
+    marginBottom: 3
+  },
+
+  itemText: {
+    fontSize: 12,
+    lineHeight: 1.4,
+    color: '#111'
   }
 })
 
@@ -133,158 +119,65 @@ const MyDocument = ({ data }) => (
 
     <Page size="A4" style={styles.page}>
 
-      {/* SIDEBAR */}
+      {/* PSEUDO BACKGROUND */}
+      <View style={styles.bgShape} />
 
+      {/* SIDEBAR */}
       <View style={styles.sidebar}>
 
-        {/* HEADER */}
+        <Text style={styles.firstName}>{data.firstName}</Text>
+        <Text style={styles.lastName}>{data.lastName}</Text>
 
-        <View style={styles.header}>
-
-          <Text style={styles.firstName}>
-            {data.firstName}
-          </Text>
-
-          <Text style={styles.lastName}>
-            {data.lastName}
-          </Text>
-
-          <Text style={styles.role}>
-            {data.title}
-          </Text>
-
-        </View>
-
-        {/* CONTACT */}
+        <Text style={styles.role}>{data.title}</Text>
 
         <View style={styles.divider} />
 
-        <View style={styles.section}>
-
-          <Text style={styles.sectionTitle}>
-            Kontakt
-          </Text>
-
-          <Text style={styles.smallText}>
-            {data.email}
-          </Text>
-
-          <Text style={styles.smallText}>
-            {data.phone}
-          </Text>
-
-          <Text style={styles.smallText}>
-            {data.address}
-          </Text>
-
-        </View>
-
-        {/* SKILLS */}
+        <Text style={styles.sectionTitle}>Kontakt</Text>
+        <Text style={styles.text}>{data.email}</Text>
+        <Text style={styles.text}>{data.phone}</Text>
+        <Text style={styles.text}>{data.address}</Text>
 
         <View style={styles.divider} />
 
-        <View style={styles.section}>
-
-          <Text style={styles.sectionTitle}>
-            Umiejętności
-          </Text>
-
-          <Text style={styles.smallText}>
-            {data.skills}
-          </Text>
-
-        </View>
-
-        {/* LANGUAGES */}
+        <Text style={styles.sectionTitle}>Umiejętności</Text>
+        <Text style={styles.text}>{data.skills}</Text>
 
         <View style={styles.divider} />
 
-        <View style={styles.section}>
-
-          <Text style={styles.sectionTitle}>
-            Języki
-          </Text>
-
-          <Text style={styles.smallText}>
-            {data.languages}
-          </Text>
-
-        </View>
-
-        {/* CERTIFICATES */}
+        <Text style={styles.sectionTitle}>Języki</Text>
+        <Text style={styles.text}>{data.languages}</Text>
 
         <View style={styles.divider} />
 
-        <View style={styles.section}>
-
-          <Text style={styles.sectionTitle}>
-            Certyfikaty
-          </Text>
-
-          <Text style={styles.smallText}>
-            {data.certificates}
-          </Text>
-
-        </View>
+        <Text style={styles.sectionTitle}>Certyfikaty</Text>
+        <Text style={styles.text}>{data.certificates}</Text>
 
       </View>
 
       {/* MAIN */}
-
       <View style={styles.main}>
 
-        {/* ABOUT */}
-
-        <View style={styles.section}>
-
-          <Text style={styles.sectionTitle}>
-            O mnie
-          </Text>
-
-          <Text style={styles.text}>
-            {data.description}
-          </Text>
-
+        <View style={styles.block}>
+          <Text style={styles.mainTitle}>O mnie</Text>
+          <Text style={styles.itemText}>{data.description}</Text>
         </View>
 
         <View style={styles.divider} />
 
-        {/* EXPERIENCE */}
-
-        <View style={styles.section}>
-
-          <Text style={styles.sectionTitle}>
-            Doświadczenie
-          </Text>
-
-          <View style={styles.itemBlock}>
-
-            <Text style={styles.itemTitle}>
-              {data.experience}
-            </Text>
-
-          </View>
-
+        <View style={styles.block}>
+          <Text style={styles.mainTitle}>Doświadczenie</Text>
+          <Text style={styles.itemTitle}>{data.experienceTitle}</Text>
+          <Text style={styles.itemSub}>{data.experienceDate}</Text>
+          <Text style={styles.itemText}>{data.experience}</Text>
         </View>
 
         <View style={styles.divider} />
 
-        {/* EDUCATION */}
-
-        <View style={styles.section}>
-
-          <Text style={styles.sectionTitle}>
-            Edukacja
-          </Text>
-
-          <View style={styles.itemBlock}>
-
-            <Text style={styles.itemTitle}>
-              {data.education}
-            </Text>
-
-          </View>
-
+        <View style={styles.block}>
+          <Text style={styles.mainTitle}>Edukacja</Text>
+          <Text style={styles.itemTitle}>{data.educationTitle}</Text>
+          <Text style={styles.itemSub}>{data.educationDate}</Text>
+          <Text style={styles.itemText}>{data.education}</Text>
         </View>
 
       </View>
