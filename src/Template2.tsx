@@ -190,102 +190,111 @@ const styles = StyleSheet.create({
   }
 })
 
-const MyDocument2 = ({ data }) => (
-  <Document>
-    <Page size="A4" style={styles.page}>
+const MyDocument2 = ({ data, t }) => {
+  const getNumberedList = (field) => {
+    if (!field) return [];
+    return field.split(/[,\n]+/).map(item => item.trim()).filter(Boolean);
+  };
 
-      {/* HEADER */}
-      <View style={styles.header}>
+  const hasValidPhoto = data.photo && (data.photo.startsWith('data:image/') || data.photo.startsWith('blob:'));
 
-        {data.photo
-          ? <View style={styles.photoWrapper}><Image src={data.photo} style={styles.photo} /></View>
-          : <View style={styles.photoPlaceholder} />
-        }
+  return (
+    <Document>
+      <Page size="A4" style={styles.page}>
 
-        <View style={styles.headerText}>
-          <Text style={styles.name}>{data.firstName} {data.lastName}</Text>
-          <Text style={styles.role}>{data.title}</Text>
-          <View style={styles.contactRow}>
-            <Text style={styles.contactChip}>{data.email}</Text>
-            {data.email && data.phone ? <Text style={styles.contactChip}>·</Text> : null}
-            <Text style={styles.contactChip}>{data.phone}</Text>
-            {data.phone && data.address ? <Text style={styles.contactChip}>·</Text> : null}
-            <Text style={styles.contactChip}>{data.address}</Text>
-          </View>
-        </View>
+        {/* HEADER */}
+        <View style={styles.header}>
 
-      </View>
+          {hasValidPhoto
+            ? <View style={styles.photoWrapper}><Image src={data.photo} style={styles.photo} /></View>
+            : <View style={styles.photoPlaceholder} />
+          }
 
-      {/* BODY */}
-      <View style={styles.body}>
-
-        {/* LEFT */}
-        <View style={styles.leftCol}>
-
-          <Text style={styles.sectionLabelFirst}>Umiejętności</Text>
-          <View style={styles.tagsRow}>
-            {data.skills ? data.skills.split(',').map((s, i) => (
-              <View key={i} style={styles.tag}>
-                <Text style={styles.tagText}>{s.trim()}</Text>
-              </View>
-            )) : null}
-          </View>
-
-          <View style={styles.divider} />
-
-          <Text style={styles.sectionLabel}>Języki</Text>
-          <View style={styles.tagsRow}>
-            {data.languages ? data.languages.split(',').map((l, i) => (
-              <View key={i} style={styles.tag}>
-                <Text style={styles.tagText}>{l.trim()}</Text>
-              </View>
-            )) : null}
-          </View>
-
-          <View style={styles.divider} />
-
-          <Text style={styles.sectionLabel}>Certyfikaty</Text>
-          {data.certificates ? data.certificates.split(',').map((c, i) => (
-            <View key={i} style={styles.numberBlock}>
-              <Text style={styles.number}>{i + 1}.</Text>
-              <Text style={styles.text}>{c.trim()}</Text>
+          <View style={styles.headerText}>
+            <Text style={styles.name}>{data.firstName} {data.lastName}</Text>
+            <Text style={styles.role}>{data.title}</Text>
+            <View style={styles.contactRow}>
+              <Text style={styles.contactChip}>{data.email}</Text>
+              {data.email && data.phone ? <Text style={styles.contactChip}>·</Text> : null}
+              <Text style={styles.contactChip}>{data.phone}</Text>
+              {data.phone && data.address ? <Text style={styles.contactChip}>·</Text> : null}
+              <Text style={styles.contactChip}>{data.address}</Text>
             </View>
-          )) : null}
-
-        </View>
-
-        {/* RIGHT */}
-        <View style={styles.rightCol}>
-
-          <View style={styles.block}>
-            <Text style={styles.blockTitle}>O mnie</Text>
-            <Text style={styles.itemText}>{data.description}</Text>
-          </View>
-
-          <View style={styles.divider} />
-
-          <View style={styles.block}>
-            <Text style={styles.blockTitle}>Doświadczenie</Text>
-            <Text style={styles.itemTitle}>{data.experienceTitle}</Text>
-            <Text style={styles.itemSub}>{data.experienceDate}</Text>
-            <Text style={styles.itemText}>{data.experience}</Text>
-          </View>
-
-          <View style={styles.divider} />
-
-          <View style={styles.block}>
-            <Text style={styles.blockTitle}>Edukacja</Text>
-            <Text style={styles.itemTitle}>{data.educationTitle}</Text>
-            <Text style={styles.itemSub}>{data.educationDate}</Text>
-            <Text style={styles.itemText}>{data.education}</Text>
           </View>
 
         </View>
 
-      </View>
+        {/* BODY */}
+        <View style={styles.body}>
 
-    </Page>
-  </Document>
-)
+          {/* LEFT */}
+          <View style={styles.leftCol}>
+
+            <Text style={styles.sectionLabelFirst}>{t('skills')}</Text>
+            <View style={styles.tagsRow}>
+              {data.skills ? data.skills.split(/[,\n]+/).map((s, i) => s.trim() && (
+                <View key={i} style={styles.tag}>
+                  <Text style={styles.tagText}>{s.trim()}</Text>
+                </View>
+              )) : null}
+            </View>
+
+            <View style={styles.divider} />
+
+            <Text style={styles.sectionLabel}>{t('languages')}</Text>
+            <View style={styles.tagsRow}>
+              {data.languages ? data.languages.split(/[,\n]+/).map((l, i) => l.trim() && (
+                <View key={i} style={styles.tag}>
+                  <Text style={styles.tagText}>{l.trim()}</Text>
+                </View>
+              )) : null}
+            </View>
+
+            <View style={styles.divider} />
+
+            <Text style={styles.sectionLabel}>{t('certificates')}</Text>
+            {getNumberedList(data.certificates).map((c, i) => (
+              <View key={i} style={styles.numberBlock}>
+                <Text style={styles.number}>{i + 1}.</Text>
+                <Text style={styles.text}>{c}</Text>
+              </View>
+            ))}
+
+          </View>
+
+          {/* RIGHT */}
+          <View style={styles.rightCol}>
+
+            <View style={styles.block}>
+              <Text style={styles.blockTitle}>{t('description')}</Text>
+              <Text style={styles.itemText}>{data.description}</Text>
+            </View>
+
+            <View style={styles.divider} />
+
+            <View style={styles.block}>
+              <Text style={styles.blockTitle}>{t('experience')}</Text>
+              <Text style={styles.itemTitle}>{data.experienceTitle}</Text>
+              <Text style={styles.itemSub}>{data.experienceDate}</Text>
+              <Text style={styles.itemText}>{data.experience}</Text>
+            </View>
+
+            <View style={styles.divider} />
+
+            <View style={styles.block}>
+              <Text style={styles.blockTitle}>{t('education')}</Text>
+              <Text style={styles.itemTitle}>{data.educationTitle}</Text>
+              <Text style={styles.itemSub}>{data.educationDate}</Text>
+              <Text style={styles.itemText}>{data.education}</Text>
+            </View>
+
+          </View>
+
+        </View>
+
+      </Page>
+    </Document>
+  )
+}
 
 export default MyDocument2

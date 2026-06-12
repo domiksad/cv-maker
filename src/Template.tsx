@@ -189,98 +189,100 @@ const styles = StyleSheet.create({
   }
 })
 
-const MyDocument = ({ data }) => (
-  <Document>
-    <Page size="A4" style={styles.page}>
+const MyDocument = ({ data, t }) => {
+  // Dodatkowe, rygorystyczne sprawdzenie poprawności adresu URL / base64 obrazu przed przekazaniem do biblioteki
+  const hasValidPhoto = data.photo && (data.photo.startsWith('data:image/') || data.photo.startsWith('blob:'));
 
-      {/* SIDEBAR */}
-      <View style={styles.sidebar}>
+  return (
+    <Document>
+      <Page size="A4" style={styles.page}>
 
-        {data.photo
-          ? <View style={styles.photoWrapper}><Image src={data.photo} style={styles.photo} /></View>
-          : <View style={styles.photoPlaceholder} />
-        }
+        {/* SIDEBAR */}
+        <View style={styles.sidebar}>
 
-        <Text style={styles.firstName}>{data.firstName}</Text>
-        <Text style={styles.lastName}>{data.lastName}</Text>
-        <Text style={styles.role}>{data.title}</Text>
+          {hasValidPhoto
+            ? <View style={styles.photoWrapper}><Image src={data.photo} style={styles.photo} /></View>
+            : <View style={styles.photoPlaceholder} />
+          }
 
-        <View style={styles.divider} />
+          <View style={styles.divider} />
 
-        <Text style={styles.sectionLabel}>Kontakt</Text>
-        <Text style={styles.sideText}>{data.email}</Text>
-        <Text style={styles.sideText}>{data.phone}</Text>
-        <Text style={styles.sideText}>{data.address}</Text>
+          {/* Poprawka: Zmiana statycznego tekstu na klucz językowy pobierany dynamicznie */}
+          <Text style={styles.sectionLabel}>{t('email')} / {t('phone')} / {t('address')}</Text>
+          <Text style={styles.sideText}>{data.email}</Text>
+          <Text style={styles.sideText}>{data.phone}</Text>
+          <Text style={styles.sideText}>{data.address}</Text>
 
-        <View style={styles.divider} />
+          <View style={styles.divider} />
 
-        <Text style={styles.sectionLabel}>Umiejętności</Text>
-        {data.skills ? data.skills.split(',').map((s, i) => (
-          <View key={i} style={styles.skillRow}>
-            <View style={styles.skillDot} />
-            <Text style={styles.skillText}>{s.trim()}</Text>
+          <Text style={styles.sectionLabel}>{t('skills')}</Text>
+          {data.skills ? data.skills.split(/[,\n]+/).map((s, i) => s.trim() && (
+            <View key={i} style={styles.skillRow}>
+              <View style={styles.skillDot} />
+              <Text style={styles.skillText}>{s.trim()}</Text>
+            </View>
+          )) : null}
+
+          <View style={styles.divider} />
+
+          <Text style={styles.sectionLabel}>{t('languages')}</Text>
+          {data.languages ? data.languages.split(/[,\n]+/).map((l, i) => l.trim() && (
+            <View key={i} style={styles.skillRow}>
+              <View style={styles.skillDot} />
+              <Text style={styles.skillText}>{l.trim()}</Text>
+            </View>
+          )) : null}
+
+          <View style={styles.divider} />
+
+          <Text style={styles.sectionLabel}>{t('certificates')}</Text>
+          {data.certificates ? data.certificates.split(/[,\n]+/).map((c, i) => c.trim() && (
+            <View key={i} style={styles.skillRow}>
+              <View style={styles.skillDot} />
+              <Text style={styles.skillText}>{c.trim()}</Text>
+            </View>
+          )) : null}
+
+        </View>
+
+        {/* MAIN */}
+        <View style={styles.main}>
+
+          <View style={styles.nameBlock}>
+            <Text style={styles.mainFirstName}>{data.firstName}</Text>
+            <Text style={styles.mainLastName}>{data.lastName}</Text>
+            <Text style={styles.mainRole}>{data.title}</Text>
+            <View style={styles.accentLine} />
           </View>
-        )) : null}
 
-        <View style={styles.divider} />
-
-        <Text style={styles.sectionLabel}>Języki</Text>
-        {data.languages ? data.languages.split(',').map((l, i) => (
-          <View key={i} style={styles.skillRow}>
-            <View style={styles.skillDot} />
-            <Text style={styles.skillText}>{l.trim()}</Text>
+          <View style={styles.block}>
+            <Text style={styles.sectionTitle}>{t('description')}</Text>
+            <Text style={styles.itemText}>{data.description}</Text>
           </View>
-        )) : null}
 
-        <View style={styles.divider} />
+          <View style={styles.dividerMain} />
 
-        <Text style={styles.sectionLabel}>Certyfikaty</Text>
-        {data.certificates ? data.certificates.split(',').map((c, i) => (
-          <View key={i} style={styles.skillRow}>
-            <View style={styles.skillDot} />
-            <Text style={styles.skillText}>{c.trim()}</Text>
+          <View style={styles.block}>
+            <Text style={styles.sectionTitle}>{t('experience')}</Text>
+            <Text style={styles.itemTitle}>{data.experienceTitle}</Text>
+            <Text style={styles.itemSub}>{data.experienceDate}</Text>
+            <Text style={styles.itemText}>{data.experience}</Text>
           </View>
-        )) : null}
 
-      </View>
+          <View style={styles.dividerMain} />
 
-      {/* MAIN */}
-      <View style={styles.main}>
+          <View style={styles.block}>
+            <Text style={styles.sectionTitle}>{t('education')}</Text>
+            <Text style={styles.itemTitle}>{data.educationTitle}</Text>
+            <Text style={styles.itemSub}>{data.educationDate}</Text>
+            <Text style={styles.itemText}>{data.education}</Text>
+          </View>
 
-        <View style={styles.nameBlock}>
-          <Text style={styles.mainFirstName}>{data.firstName}</Text>
-          <Text style={styles.mainLastName}>{data.lastName}</Text>
-          <Text style={styles.mainRole}>{data.title}</Text>
-          <View style={styles.accentLine} />
         </View>
 
-        <View style={styles.block}>
-          <Text style={styles.sectionTitle}>O mnie</Text>
-          <Text style={styles.itemText}>{data.description}</Text>
-        </View>
-
-        <View style={styles.dividerMain} />
-
-        <View style={styles.block}>
-          <Text style={styles.sectionTitle}>Doświadczenie</Text>
-          <Text style={styles.itemTitle}>{data.experienceTitle}</Text>
-          <Text style={styles.itemSub}>{data.experienceDate}</Text>
-          <Text style={styles.itemText}>{data.experience}</Text>
-        </View>
-
-        <View style={styles.dividerMain} />
-
-        <View style={styles.block}>
-          <Text style={styles.sectionTitle}>Edukacja</Text>
-          <Text style={styles.itemTitle}>{data.educationTitle}</Text>
-          <Text style={styles.itemSub}>{data.educationDate}</Text>
-          <Text style={styles.itemText}>{data.education}</Text>
-        </View>
-
-      </View>
-
-    </Page>
-  </Document>
-)
+      </Page>
+    </Document>
+  )
+}
 
 export default MyDocument
