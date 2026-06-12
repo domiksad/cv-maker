@@ -1,5 +1,5 @@
 import { PDFViewer } from '@react-pdf/renderer'
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, memo } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import MyDocument from './Template'
@@ -7,6 +7,14 @@ import MyDocument2 from './Template2'
 
 import "./i18n"
 import './App.css'
+
+const MemoizedPDF = memo(({ Template, data }: any) => {
+  return (
+    <PDFViewer className="w-full h-full border-none">
+      <Template data={data} />
+    </PDFViewer>
+  )
+})
 
 function App() {
 
@@ -16,7 +24,6 @@ function App() {
     i18n.changeLanguage(lng)
   }
 
-  // TEMPLATES
   const templates = {
     classic: MyDocument,
     modern: MyDocument2
@@ -24,7 +31,6 @@ function App() {
 
   const [activeTemplate, setActiveTemplate] = useState('classic')
 
-  // FORM DATA
   const [formData, setFormData] = useState(() => {
     const saved = localStorage.getItem('formData')
     return saved ? JSON.parse(saved) : {
@@ -39,24 +45,41 @@ function App() {
       languages: '',
       certificates: '',
       experience: '',
-      education: ''
+      experienceTitle: '',
+      experienceDate: '',
+      education: '',
+      educationTitle: '',
+      educationDate: ''
     }
   })
+
+  const [photo, setPhoto] = useState(() => {
+    return sessionStorage.getItem('photo') || ''
+  })
+
+  const [commitData, setCommitData] = useState({ ...formData, photo })
 
   useEffect(() => {
     localStorage.setItem('formData', JSON.stringify(formData))
   }, [formData])
 
-  // SNAPSHOT (fix flicker)
-  const [commitData, setCommitData] = useState(formData)
+  useEffect(() => {
+    if (photo) {
+      try {
+        sessionStorage.setItem('photo', photo)
+      } catch {
+      }
+    } else {
+      sessionStorage.removeItem('photo')
+    }
+  }, [photo])
 
   useEffect(() => {
-    const t = setTimeout(() => {
-      setCommitData(formData)
+    const timer = setTimeout(() => {
+      setCommitData({ ...formData, photo })
     }, 600)
-
-    return () => clearTimeout(t)
-  }, [formData])
+    return () => clearTimeout(timer)
+  }, [formData, photo])
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -64,6 +87,40 @@ function App() {
       ...prev,
       [name]: value
     }))
+  }
+
+  const handlePhoto = (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+  
+    const img = new window.Image()
+    const url = URL.createObjectURL(file)
+  
+    img.onload = () => {
+      const canvas = document.createElement('canvas')
+      const MAX = 400
+      let w = img.width
+      let h = img.height
+  
+      if (w > h) {
+        h = Math.round(h * MAX / w)
+        w = MAX
+      } else {
+        w = Math.round(w * MAX / h)
+        h = MAX
+      }
+  
+      canvas.width = w
+      canvas.height = h
+      const ctx = canvas.getContext('2d')
+      ctx.drawImage(img, 0, 0, w, h)
+  
+      const compressed = canvas.toDataURL('image/jpeg', 0.7)
+      URL.revokeObjectURL(url)
+      setPhoto(compressed)
+    }
+  
+    img.src = url
   }
 
   const handleReset = () => {
@@ -79,33 +136,20 @@ function App() {
       languages: '',
       certificates: '',
       experience: '',
-      education: ''
+      experienceTitle: '',
+      experienceDate: '',
+      education: '',
+      educationTitle: '',
+      educationDate: ''
     }
-
     setFormData(empty)
-    setCommitData(empty)
+    setCommitData({ ...empty, photo: '' })
+    setPhoto('')
   }
 
   const ActiveTemplate = useMemo(() => {
     return templates[activeTemplate]
   }, [activeTemplate])
-
-  const PDFPreview = ({ Template, data }) => {
-    return (
-      <PDFViewer className="w-full h-full border-none">
-        <Template data={data} />
-      </PDFViewer>
-    )
-  }
-
-  const MemoPDF = useMemo(() => {
-    return (
-      <PDFPreview
-        Template={ActiveTemplate}
-        data={commitData}
-      />
-    )
-  }, [ActiveTemplate, commitData])
 
   return (
     <div className='flex h-screen flex-col'>
@@ -113,44 +157,31 @@ function App() {
       {/* TOP BAR */}
       <div className="p-4 flex justify-between items-center border-b">
 
-        {/* LEFT - LANGUAGE */}
         <div className="flex gap-4">
-
           <button
             onClick={() => changeLanguage('pl')}
-            style={{
-              fontWeight: i18n.language === 'pl' ? 'bold' : 'normal'
-            }}
+            style={{ fontWeight: i18n.language === 'pl' ? 'bold' : 'normal' }}
           >
             PL
           </button>
-
           <button
             onClick={() => changeLanguage('en')}
-            style={{
-              fontWeight: i18n.language === 'en' ? 'bold' : 'normal'
-            }}
+            style={{ fontWeight: i18n.language === 'en' ? 'bold' : 'normal' }}
           >
             EN
           </button>
-
         </div>
 
-        {/* RIGHT - TEMPLATES */}
         <div className="flex gap-4">
-
           {Object.keys(templates).map((key) => (
             <button
               key={key}
               onClick={() => setActiveTemplate(key)}
-              style={{
-                fontWeight: activeTemplate === key ? 'bold' : 'normal'
-              }}
+              style={{ fontWeight: activeTemplate === key ? 'bold' : 'normal' }}
             >
               {key}
             </button>
           ))}
-
         </div>
 
       </div>
@@ -160,8 +191,9 @@ function App() {
 
         {/* LEFT FORM */}
         <div className='flex-1 overflow-auto p-4'>
-
           <form className="flex flex-col gap-4">
+
+            <input type="file" accept="image/*" onChange={handlePhoto} className="p-2 border" />
 
             <input name="firstName" value={formData.firstName} placeholder={t('firstName')} onChange={handleChange} className="p-2 border" />
             <input name="lastName" value={formData.lastName} placeholder={t('lastName')} onChange={handleChange} className="p-2 border" />
@@ -176,7 +208,13 @@ function App() {
             <input name="certificates" value={formData.certificates} placeholder={t('certificates')} onChange={handleChange} className="p-2 border" />
 
             <textarea name="description" value={formData.description} placeholder={t('description')} onChange={handleChange} className="p-2 border" />
+
+            <input name="experienceTitle" value={formData.experienceTitle} placeholder={t('experienceTitle') || 'Nazwa stanowiska'} onChange={handleChange} className="p-2 border" />
+            <input name="experienceDate" value={formData.experienceDate} placeholder={t('experienceDate') || 'Okres zatrudnienia'} onChange={handleChange} className="p-2 border" />
             <textarea name="experience" value={formData.experience} placeholder={t('experience')} onChange={handleChange} className="p-2 border" />
+
+            <input name="educationTitle" value={formData.educationTitle} placeholder={t('educationTitle') || 'Nazwa szkoły'} onChange={handleChange} className="p-2 border" />
+            <input name="educationDate" value={formData.educationDate} placeholder={t('educationDate') || 'Okres nauki'} onChange={handleChange} className="p-2 border" />
             <textarea name="education" value={formData.education} placeholder={t('education')} onChange={handleChange} className="p-2 border" />
 
             <button
@@ -188,14 +226,11 @@ function App() {
             </button>
 
           </form>
-
         </div>
 
         {/* RIGHT PREVIEW */}
         <div className='flex-1'>
-
-          {MemoPDF}
-
+          <MemoizedPDF Template={ActiveTemplate} data={commitData} />
         </div>
 
       </div>

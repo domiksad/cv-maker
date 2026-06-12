@@ -19,9 +19,11 @@ const resources = {
       certificates: "Certyfikaty",
 
       experienceTitle: "Stanowisko / Firma",
-      experienceDate: "Data",
+      experienceDate: "Okres zatrudnienia",
       experience: "Opis doświadczenia",
 
+      educationTitle: "Nazwa szkoły / Kierunek",
+      educationDate: "Okres nauki",
       education: "Opis edukacji",
 
       preview: "Podgląd PDF"
@@ -42,9 +44,13 @@ const resources = {
       skills: "Skills",
       languages: "Languages",
       certificates: "Certificates",
-      
+
+      experienceTitle: "Position / Company",
+      experienceDate: "Employment Period",
       experience: "Experience Description",
 
+      educationTitle: "School / Field of Study",
+      educationDate: "Study Period",
       education: "Education Description",
 
       preview: "PDF Preview"

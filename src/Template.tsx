@@ -4,6 +4,7 @@ import {
   Font,
   Text,
   View,
+  Image,
   StyleSheet
 } from '@react-pdf/renderer'
 
@@ -13,168 +14,264 @@ Font.register({
 })
 
 const styles = StyleSheet.create({
-
   page: {
     flexDirection: 'row',
     fontFamily: 'Roboto',
     backgroundColor: '#ffffff',
-    fontSize: 12
-  },
-
-  /* FAKE BACKGROUND SHAPE */
-  bgShape: {
-    position: 'absolute',
-    bottom: 0,
-    right: -80,
-    width: 300,
-    height: 300,
-    backgroundColor: '#000',
-    transform: 'rotate(20deg)',
-    opacity: 0.08
+    fontSize: 11
   },
 
   sidebar: {
-    width: '32%',
-    backgroundColor: '#f3f4f6',
-    padding: 24,
-    borderRight: '2 solid #000'
+    width: '35%',
+    backgroundColor: '#1a1a1a',
+    padding: 28,
+    flexDirection: 'column'
   },
 
   main: {
-    width: '68%',
-    padding: 28
+    width: '65%',
+    padding: 36,
+    backgroundColor: '#ffffff'
+  },
+
+  photoWrapper: {
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+    overflow: 'hidden',
+    marginBottom: 16,
+    border: '2 solid #444444'
+  },
+
+  photo: {
+    width: 90,
+    height: 90
+  },
+
+  photoPlaceholder: {
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+    backgroundColor: '#2a2a2a',
+    marginBottom: 16
   },
 
   firstName: {
-    fontSize: 28,
+    fontSize: 16,
     fontWeight: 700,
-    color: '#000'
+    color: '#ffffff',
+    marginBottom: 1
   },
 
   lastName: {
-    fontSize: 28,
-    color: '#000',
-    marginBottom: 8
-  },
-
-  role: {
-    fontSize: 11,
-    textTransform: 'uppercase',
-    marginBottom: 14,
-    color: '#333'
-  },
-
-  divider: {
-    borderBottom: '1 solid #000',
-    marginVertical: 8
-  },
-
-  sectionTitle: {
-    fontSize: 12,
-    fontWeight: 700,
-    textTransform: 'uppercase',
-    marginBottom: 6,
-    color: '#000'
-  },
-
-  text: {
-    fontSize: 12,
-    color: '#111',
-    lineHeight: 1.4,
-    marginBottom: 2
-  },
-
-  mainTitle: {
-    fontSize: 15,
-    fontWeight: 700,
-    textTransform: 'uppercase',
+    fontSize: 16,
+    color: '#999999',
     marginBottom: 6
   },
 
+  role: {
+    fontSize: 7.5,
+    textTransform: 'uppercase',
+    color: '#666666',
+    letterSpacing: 2,
+    marginBottom: 18
+  },
+
+  divider: {
+    borderBottom: '1 solid #2e2e2e',
+    marginVertical: 12
+  },
+
+  dividerMain: {
+    borderBottom: '1 solid #eeeeee',
+    marginVertical: 14
+  },
+
+  sectionLabel: {
+    fontSize: 7,
+    fontWeight: 700,
+    textTransform: 'uppercase',
+    color: '#555555',
+    letterSpacing: 2,
+    marginBottom: 8
+  },
+
+  sideText: {
+    fontSize: 9.5,
+    color: '#bbbbbb',
+    lineHeight: 1.7,
+    marginBottom: 2
+  },
+
+  skillRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 5
+  },
+
+  skillDot: {
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: '#ffffff',
+    marginRight: 8
+  },
+
+  skillText: {
+    fontSize: 9.5,
+    color: '#cccccc'
+  },
+
+  /* MAIN */
+  nameBlock: {
+    marginBottom: 22
+  },
+
+  mainFirstName: {
+    fontSize: 30,
+    fontWeight: 700,
+    color: '#111111',
+    marginBottom: 0
+  },
+
+  mainLastName: {
+    fontSize: 30,
+    color: '#cccccc',
+    marginBottom: 6
+  },
+
+  mainRole: {
+    fontSize: 9,
+    textTransform: 'uppercase',
+    letterSpacing: 2,
+    color: '#999999',
+    marginBottom: 4
+  },
+
+  accentLine: {
+    width: 36,
+    height: 2,
+    backgroundColor: '#111111',
+    marginTop: 8
+  },
+
+  sectionTitle: {
+    fontSize: 7.5,
+    fontWeight: 700,
+    textTransform: 'uppercase',
+    letterSpacing: 2,
+    color: '#999999',
+    marginBottom: 10
+  },
+
   block: {
-    marginBottom: 12
+    marginBottom: 18
   },
 
   itemTitle: {
-    fontSize: 13,
+    fontSize: 11,
     fontWeight: 700,
-    color: '#000'
+    color: '#111111',
+    marginBottom: 2
   },
 
   itemSub: {
-    fontSize: 11,
-    color: '#444',
-    marginBottom: 3
+    fontSize: 8.5,
+    color: '#aaaaaa',
+    marginBottom: 6,
+    letterSpacing: 0.5
   },
 
   itemText: {
-    fontSize: 12,
-    lineHeight: 1.4,
-    color: '#111'
+    fontSize: 9.5,
+    lineHeight: 1.7,
+    color: '#444444'
   }
 })
 
 const MyDocument = ({ data }) => (
   <Document>
-
     <Page size="A4" style={styles.page}>
-
-      {/* PSEUDO BACKGROUND */}
-      <View style={styles.bgShape} />
 
       {/* SIDEBAR */}
       <View style={styles.sidebar}>
 
+        {data.photo
+          ? <View style={styles.photoWrapper}><Image src={data.photo} style={styles.photo} /></View>
+          : <View style={styles.photoPlaceholder} />
+        }
+
         <Text style={styles.firstName}>{data.firstName}</Text>
         <Text style={styles.lastName}>{data.lastName}</Text>
-
         <Text style={styles.role}>{data.title}</Text>
 
         <View style={styles.divider} />
 
-        <Text style={styles.sectionTitle}>Kontakt</Text>
-        <Text style={styles.text}>{data.email}</Text>
-        <Text style={styles.text}>{data.phone}</Text>
-        <Text style={styles.text}>{data.address}</Text>
+        <Text style={styles.sectionLabel}>Kontakt</Text>
+        <Text style={styles.sideText}>{data.email}</Text>
+        <Text style={styles.sideText}>{data.phone}</Text>
+        <Text style={styles.sideText}>{data.address}</Text>
 
         <View style={styles.divider} />
 
-        <Text style={styles.sectionTitle}>Umiejętności</Text>
-        <Text style={styles.text}>{data.skills}</Text>
+        <Text style={styles.sectionLabel}>Umiejętności</Text>
+        {data.skills ? data.skills.split(',').map((s, i) => (
+          <View key={i} style={styles.skillRow}>
+            <View style={styles.skillDot} />
+            <Text style={styles.skillText}>{s.trim()}</Text>
+          </View>
+        )) : null}
 
         <View style={styles.divider} />
 
-        <Text style={styles.sectionTitle}>Języki</Text>
-        <Text style={styles.text}>{data.languages}</Text>
+        <Text style={styles.sectionLabel}>Języki</Text>
+        {data.languages ? data.languages.split(',').map((l, i) => (
+          <View key={i} style={styles.skillRow}>
+            <View style={styles.skillDot} />
+            <Text style={styles.skillText}>{l.trim()}</Text>
+          </View>
+        )) : null}
 
         <View style={styles.divider} />
 
-        <Text style={styles.sectionTitle}>Certyfikaty</Text>
-        <Text style={styles.text}>{data.certificates}</Text>
+        <Text style={styles.sectionLabel}>Certyfikaty</Text>
+        {data.certificates ? data.certificates.split(',').map((c, i) => (
+          <View key={i} style={styles.skillRow}>
+            <View style={styles.skillDot} />
+            <Text style={styles.skillText}>{c.trim()}</Text>
+          </View>
+        )) : null}
 
       </View>
 
       {/* MAIN */}
       <View style={styles.main}>
 
+        <View style={styles.nameBlock}>
+          <Text style={styles.mainFirstName}>{data.firstName}</Text>
+          <Text style={styles.mainLastName}>{data.lastName}</Text>
+          <Text style={styles.mainRole}>{data.title}</Text>
+          <View style={styles.accentLine} />
+        </View>
+
         <View style={styles.block}>
-          <Text style={styles.mainTitle}>O mnie</Text>
+          <Text style={styles.sectionTitle}>O mnie</Text>
           <Text style={styles.itemText}>{data.description}</Text>
         </View>
 
-        <View style={styles.divider} />
+        <View style={styles.dividerMain} />
 
         <View style={styles.block}>
-          <Text style={styles.mainTitle}>Doświadczenie</Text>
+          <Text style={styles.sectionTitle}>Doświadczenie</Text>
           <Text style={styles.itemTitle}>{data.experienceTitle}</Text>
           <Text style={styles.itemSub}>{data.experienceDate}</Text>
           <Text style={styles.itemText}>{data.experience}</Text>
         </View>
 
-        <View style={styles.divider} />
+        <View style={styles.dividerMain} />
 
         <View style={styles.block}>
-          <Text style={styles.mainTitle}>Edukacja</Text>
+          <Text style={styles.sectionTitle}>Edukacja</Text>
           <Text style={styles.itemTitle}>{data.educationTitle}</Text>
           <Text style={styles.itemSub}>{data.educationDate}</Text>
           <Text style={styles.itemText}>{data.education}</Text>
@@ -183,7 +280,6 @@ const MyDocument = ({ data }) => (
       </View>
 
     </Page>
-
   </Document>
 )
 
